@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/common/AuthLayout.jsx'
 import { useAuth } from '../hooks/useAuth.js'
+import { getFirebaseDebugStatus } from '../services/firebase.js'
 
 function Login() {
   const [email, setEmail] = useState('student@example.com')
@@ -10,6 +11,8 @@ function Login() {
   const { login, loginGoogle } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  
+  const debug = getFirebaseDebugStatus()
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -70,6 +73,23 @@ function Login() {
             {isLoggingIn ? 'Logging in...' : 'Continue with Email'}
           </button>
         </form>
+        
+        {!debug.isReady && (
+          <div className="mt-4 p-4 rounded-xl bg-red-400/10 border border-red-400/20">
+            <p className="text-center text-xs font-bold text-red-400 leading-relaxed uppercase tracking-wider">
+              Firebase Configuration Missing
+            </p>
+            {debug.missingKeys.length > 0 && (
+              <div className="mt-2 text-[10px] text-white/40 font-mono text-center">
+                Missing: {debug.missingKeys.join(', ')}
+              </div>
+            )}
+            <p className="mt-2 text-[10px] text-white/30 text-center italic">
+              Please check your Vercel Environment Variables.
+            </p>
+          </div>
+        )}
+
         {error && <p className="mt-2 text-center text-xs font-bold text-red-400">{error}</p>}
       </div>
       <p className="mt-8 text-center text-sm text-white/40">
