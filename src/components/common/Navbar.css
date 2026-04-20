@@ -1,0 +1,103 @@
+.premium-nav {
+  position: relative;
+  display: flex;
+  background: rgba(13, 17, 23, 0.8);
+  backdrop-filter: blur(20px);
+  padding: 0 10px;
+  border-radius: 20px;
+  height: 60px;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.nav-item-link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 60px;
+  text-decoration: none;
+  z-index: 10;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.5s ease;
+}
+
+.nav-item-link.active .nav-icon {
+  transform: translateY(-28px);
+  color: #010409;
+}
+
+.nav-label {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 900;
+  color: #ffffff;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.nav-item-link.active .nav-label {
+  opacity: 1;
+  transform: translateY(12px);
+}
+
+/* The Bubble Indicator */
+.nav-indicator {
+  position: absolute;
+  top: -50%;
+  width: 55px;
+  height: 55px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 6px solid #020617; /* Matches app background for "cutout" feel */
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 5;
+}
+
+.nav-indicator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top-right-radius: 20px;
+  box-shadow: 1px -10px 0 0 #020617;
+}
+
+.nav-indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -20px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top-left-radius: 20px;
+  box-shadow: -1px -10px 0 0 #020617;
+}
+
+/* Responsive adjustment */
+@media (max-width: 640px) {
+  .premium-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    z-index: 1000;
+  }
+}

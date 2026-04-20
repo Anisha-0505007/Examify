@@ -1,0 +1,12 @@
+import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from 'firebase/auth'; import { auth, firebaseReady } from './firebase.js'; import { readItem, writeItem } from './storage.js'; const userKey = 'current-user'; 
+
+export function getCurrentUser() { return readItem(userKey); } 
+
+export function updateUserProfile(updates) {
+  const user = getCurrentUser();
+  const nextUser = { ...user, ...updates };
+  writeItem(userKey, nextUser);
+  return nextUser;
+}
+
+export function listenToAuthChanges(callback) { if (!firebaseReady) return () => {}; return onAuthStateChanged(auth, (firebaseUser) => { if (firebaseUser) { const user = { id: firebaseUser.uid, name: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL, memberSince: 'April 2024', language: 'English (In)', timezone: 'IST (UTC+5:30)' }; writeItem(userKey, user); callback(user); } else { callback(null); } }); } export async function loginWithGoogle() { if (!firebaseReady) throw new Error('Firebase is not configured. Check your .env file.'); const provider = new GoogleAuthProvider(); const result = await signInWithPopup(auth, provider); const firebaseUser = result.user; const user = { id: firebaseUser.uid, name: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL, memberSince: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), language: 'English (In)', timezone: 'IST (UTC+5:30)' }; writeItem(userKey, user); return user; } export function loginWithEmail(email) { const user = { id: email.toLowerCase(), name: email.split('@')[0], email, memberSince: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), language: 'English (In)', timezone: 'IST (UTC+5:30)' }; writeItem(userKey, user); return user; } export function signupWithEmail(name, email) { const user = { id: email.toLowerCase(), name, email, memberSince: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), language: 'English (In)', timezone: 'IST (UTC+5:30)' }; writeItem(userKey, user); return user; } export async function logoutUser() { if (firebaseReady) { await signOut(auth); } localStorage.removeItem('examforge:current-user'); }
