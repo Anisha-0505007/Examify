@@ -34,7 +34,7 @@ function AppShell() {
         <div className="sphere sphere-3"></div>
       </div>
 
-      <div className="mx-auto flex h-full max-w-7xl flex-col gap-6">
+      <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col gap-6">
         <header className="glass-card flex items-center justify-between px-6 py-4 md:px-8">
           <div className="flex items-center gap-10">
             <NavLink
