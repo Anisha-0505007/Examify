@@ -32,6 +32,7 @@ dist-ssr
 test_*.js
 *.json
 !package.json
+!vercel.json
 !manifest.json
 !*.schema.json
 !error.json
