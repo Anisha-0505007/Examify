@@ -3,11 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
 import { createPaper } from '../services/paperService.js'
 import { parsePaperFile } from '../services/parserService.js'
-import { answerModes, emptyPaperForm } from '../utils/constants.js'
-import QuestionDiagram from '../components/common/QuestionDiagram.jsx'
+import { emptyPaperForm } from '../utils/constants.js'
 import PdfSnipper from '../components/common/PdfSnipper.jsx'
-import { hasSymbolArtifacts, insertAtCursor, mathSymbols } from '../utils/symbols.js'
-import { getApiKey, setApiKey } from '../services/aiService.js'
 
 function UploadPaper() {
   const [form, setForm] = useState(emptyPaperForm)
@@ -17,7 +14,6 @@ function UploadPaper() {
   const [snippingIndex, setSnippingIndex] = useState(null)
   const [parserNote, setParserNote] = useState('')
   const [isParsing, setIsParsing] = useState(false)
-  const [apiKeyInput, setApiKeyInput] = useState(() => getApiKey())
   const { user } = useAuth()
   const navigate = useNavigate()
 
@@ -83,39 +79,6 @@ function UploadPaper() {
           : question,
       ),
     )
-  }
-
-  function updateQuestionType(questionIndex, type) {
-    setQuestions((current) =>
-      current.map((question, currentQuestionIndex) => {
-        if (currentQuestionIndex !== questionIndex) return question
-        return {
-          ...question,
-          type: 'mcq',
-          options: (question.options && question.options.length > 0) ? question.options : ['', '', '', ''],
-          correctAnswer: undefined,
-        }
-      }),
-    )
-  }
-
-  function handleQuestionImage(questionIndex, imageFile) {
-    if (!imageFile) return
-
-    const reader = new FileReader()
-    reader.onload = () => {
-      updateQuestion(questionIndex, 'diagramUrl', reader.result)
-      updateQuestion(questionIndex, 'diagramName', imageFile.name)
-    }
-    reader.readAsDataURL(imageFile)
-  }
-
-  function insertSymbol(questionIndex, symbol) {
-    const textarea = document.getElementById(`question-text-${questionIndex}`)
-    const question = questions[questionIndex]
-    const nextText = insertAtCursor(question.text, symbol, textarea?.selectionStart, textarea?.selectionEnd)
-    updateQuestion(questionIndex, 'text', nextText)
-    window.requestAnimationFrame(() => textarea?.focus())
   }
 
   function removeExtractedQuestion(index) {
@@ -276,7 +239,7 @@ function UploadPaper() {
                         <span className="text-[8px] uppercase text-[var(--muted)] font-black">Neg</span>
                         <input type="number" className="bg-transparent text-sm font-bold text-[var(--text)] text-center outline-none w-full" value={section.negativeMarks} onChange={e => updateSection(section.id, 'negativeMarks', Number(e.target.value))} />
                       </div>
-                      <button className="text-[var(--muted)] hover:text-red-400 transition-colors col-span-2 md:col-span-1 border-t md:border-none pt-2 md:pt-0" onClick={() => removeSection(section.id)}>✕</button>
+                      <button className="text-[var(--muted)] hover:text-red-400 transition-colors col-span-2 md:col-span-1 border-t md:border-none pt-2 md:pt-0" onClick={() => removeSection(section.id)}>âœ•</button>
                     </div>
                   ))}
                 </div>
@@ -301,14 +264,15 @@ function UploadPaper() {
             <header className="space-y-2">
               <h2 className="text-3xl font-black text-[var(--text)]">Review Extraction</h2>
               <p className="text-[var(--muted)] font-medium">Verified {questions.length} questions. Finalize details before saving.</p>
+              {parserNote && <p className="text-sm font-bold text-[var(--accent-strong)]">{parserNote}</p>}
             </header>
 
             <div className="space-y-6 overflow-y-auto max-h-[600px] pr-2 custom-scrollbar">
               {questions.map((question, idx) => (
                 <div key={question.id} className="metric !p-6 space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)]">Q{idx + 1} • {question.type}</span>
-                    <button onClick={() => removeExtractedQuestion(idx)} className="text-[var(--muted)] hover:text-red-400 transition-colors">✕</button>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)]">Q{idx + 1} â€¢ {question.type}</span>
+                    <button onClick={() => removeExtractedQuestion(idx)} className="text-[var(--muted)] hover:text-red-400 transition-colors">âœ•</button>
                   </div>
                   <textarea 
                     className="w-full bg-transparent text-[var(--text)] font-medium outline-none resize-none min-h-[80px]"

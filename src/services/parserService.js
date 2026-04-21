@@ -12,20 +12,20 @@ const optionMarker = /(?:^|[^\w])(?:\(([A-Da-d1-4])\s*\*?\s*\)|([A-Da-d1-4])\s*\
 function repairMangledText(text) {
   // Common mappings for mangled symbols in Science/Math PDFs
   return text
-    .replace(/□\s*□/g, 'π') // Double box often maps to pi
-    .replace(/\?\s*\?/g, '±') // Double question often maps to plus-minus
-    .replace(/sin\s*[□\?]/gi, 'sin θ')
-    .replace(/cos\s*[□\?]/gi, 'cos θ')
-    .replace(/tan\s*[□\?]/gi, 'tan θ')
-    .replace(/([0-9t])\s*[□\?]\s*([0-9t])/g, '$1 + $2') // expanded
-    .replace(/λ\s*[□\?]/g, 'λ =') // Lambda box often lambda =
-    .replace(/=\s*[□\?]/g, '= ') // redundant but safe
-    .replace(/[□\?]\s*is\s*:/g, 'θ is :')
-    .replace(/phase\s*[□\?]/gi, 'phase φ')
-    .replace(/frequency\s*[□\?]/gi, 'frequency f')
-    .replace(/velocity\s*[□\?]/gi, 'velocity v')
-    .replace(/([0-9])m\s*[□\?]\s*[□\?]/gi, '$1m/s') // m box box often m/s
-    .replace(/([0-9])s\s*[□\?]\s*[□\?]/gi, '$1s⁻¹')
+    .replace(/â–¡\s*â–¡/g, 'Ï€') // Double box often maps to pi
+    .replace(/\?\s*\?/g, 'Â±') // Double question often maps to plus-minus
+    .replace(/sin\s*[â–¡?]/gi, 'sin Î¸')
+    .replace(/cos\s*[â–¡?]/gi, 'cos Î¸')
+    .replace(/tan\s*[â–¡?]/gi, 'tan Î¸')
+    .replace(/([0-9t])\s*[â–¡?]\s*([0-9t])/g, '$1 + $2') // expanded
+    .replace(/Î»\s*[â–¡?]/g, 'Î» =') // Lambda box often lambda =
+    .replace(/=\s*[â–¡?]/g, '= ') // redundant but safe
+    .replace(/[â–¡?]\s*is\s*:/g, 'Î¸ is :')
+    .replace(/phase\s*[â–¡?]/gi, 'phase Ï†')
+    .replace(/frequency\s*[â–¡?]/gi, 'frequency f')
+    .replace(/velocity\s*[â–¡?]/gi, 'velocity v')
+    .replace(/([0-9])m\s*[â–¡?]\s*[â–¡?]/gi, '$1m/s') // m box box often m/s
+    .replace(/([0-9])s\s*[â–¡?]\s*[â–¡?]/gi, '$1sâ»Â¹')
 }
 
 function cleanText(value) {

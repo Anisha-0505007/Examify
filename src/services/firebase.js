@@ -15,7 +15,7 @@ const firebaseConfig = {
 // Debug: Check which keys are missing
 export const getFirebaseDebugStatus = () => {
   const missing = Object.entries(firebaseConfig)
-    .filter(([_, value]) => !value)
+    .filter(([, value]) => !value)
     .map(([key]) => key);
   return {
     isReady: Boolean(firebaseConfig.apiKey && firebaseConfig.projectId),

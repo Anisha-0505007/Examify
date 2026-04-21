@@ -11,7 +11,7 @@ const navItems = [
 ];
 
 function AppShell() {
-  const { logout, user } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -137,4 +137,4 @@ function AppShell() {
   );
 }
 
-export default AppShell;
+export default AppShell;

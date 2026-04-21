@@ -5,6 +5,7 @@ function PdfSnipper({ pageImage, onCapture, onClose }) {
   const [isDrawing, setIsDrawing] = useState(false)
   const [startPos, setStartPos] = useState({ x: 0, y: 0 })
   const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 })
+  const [selectionStyle, setSelectionStyle] = useState(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -19,13 +20,27 @@ function PdfSnipper({ pageImage, onCapture, onClose }) {
   }, [pageImage])
 
   function getMousePos(e) {
-    const rect = canvasRef.current.getBoundingClientRect()
-    const scaleX = canvasRef.current.width / rect.width
-    const scaleY = canvasRef.current.height / rect.height
+    const canvas = canvasRef.current
+    const rect = canvas.getBoundingClientRect()
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
     return {
       x: (e.clientX - rect.left) * scaleX,
       y: (e.clientY - rect.top) * scaleY
     }
+  }
+
+  function updateSelectionStyle(start, current) {
+    const canvas = canvasRef.current
+    const rect = canvas.getBoundingClientRect()
+    const scaleX = canvas.width / rect.width || 1
+    const scaleY = canvas.height / rect.height || 1
+    setSelectionStyle({
+      left: Math.min(start.x, current.x) / scaleX,
+      top: Math.min(start.y, current.y) / scaleY,
+      width: Math.abs(current.x - start.x) / scaleX,
+      height: Math.abs(current.y - start.y) / scaleY,
+    })
   }
 
   function handleMouseDown(e) {
@@ -33,16 +48,20 @@ function PdfSnipper({ pageImage, onCapture, onClose }) {
     setIsDrawing(true)
     setStartPos(pos)
     setCurrentPos(pos)
+    updateSelectionStyle(pos, pos)
   }
 
   function handleMouseMove(e) {
     if (!isDrawing) return
-    setCurrentPos(getMousePos(e))
+    const pos = getMousePos(e)
+    setCurrentPos(pos)
+    updateSelectionStyle(startPos, pos)
   }
 
   function handleMouseUp() {
     if (!isDrawing) return
     setIsDrawing(false)
+    setSelectionStyle(null)
 
     const x = Math.min(startPos.x, currentPos.x)
     const y = Math.min(startPos.y, currentPos.y)
@@ -85,12 +104,7 @@ function PdfSnipper({ pageImage, onCapture, onClose }) {
           {isDrawing && (
             <div
               className="absolute border-2 border-[var(--accent)] bg-[var(--accent-soft)]/30 pointer-events-none"
-              style={{
-                left: Math.min(startPos.x, currentPos.x) / (canvasRef.current?.width / canvasRef.current?.getBoundingClientRect().width || 1),
-                top: Math.min(startPos.y, currentPos.y) / (canvasRef.current?.height / canvasRef.current?.getBoundingClientRect().height || 1),
-                width: Math.abs(currentPos.x - startPos.x) / (canvasRef.current?.width / canvasRef.current?.getBoundingClientRect().width || 1),
-                height: Math.abs(currentPos.y - startPos.y) / (canvasRef.current?.height / canvasRef.current?.getBoundingClientRect().height || 1),
-              }}
+              style={selectionStyle}
             />
           )}
         </div>

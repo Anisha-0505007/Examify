@@ -24,9 +24,9 @@ export async function fixQuestionTextWithAI(mangledText, context = '') {
 
   try {
     const prompt = `You are an expert physics and mathematics exam digitizer.
-The following text contains mangled symbols represented by boxes (□ or similar artifacts like ?, \uFFFD). 
+The following text contains mangled symbols represented by boxes (â–¡ or similar artifacts like ?, \uFFFD). 
 Your task is to infer the correct mathematical symbols based on the context and return ONLY the completely repaired full text.
-Use standard Unicode symbols (π, θ, Ω, Δ, etc.) where appropriate.
+Use standard Unicode symbols (Ï€, Î¸, Î©, Î”, etc.) where appropriate.
 
 CRITICAL RULES:
 1. DO NOT solve the question.
@@ -146,6 +146,7 @@ ${ocrText}
   try {
     return JSON.parse(cleanJson)
   } catch (parseError) {
+    console.error("JSON parse failed:", parseError)
     console.error("Raw AI Response:", responseText)
     throw new Error("Failed to parse AI output as JSON.")
   }
